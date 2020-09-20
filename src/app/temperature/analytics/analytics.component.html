@@ -1,17 +1,42 @@
 <div class="container my-2">
+  <!-- fluctuations chart -->
   <div class="row justify-content-center mb-2 text-center">
-    <div class="container col-md-6">
+    <div class="container col-md-8">
       <div class="card">
         <div class="card-header">
           <h5>Temperature Fluctuations</h5>
         </div>
         <div class="card-body">
+          <!-- setting canvas height for mobile - doesn't look too bad on desktop either -->
           <canvas baseChart
-            [datasets]="fluctuationsChart.barChartData"
-            [labels]="fluctuationsChart.barChartLabels"
-            [options]="fluctuationsChart.barChartOptions"
-            [legend]="fluctuationsChart.barChartLegend"
-            [chartType]="fluctuationsChart.barChartType">
+            height="300"
+            [datasets]="currentChart.barChartData"
+            [labels]="currentChart.barChartLabels"
+            [options]="currentChart.barChartOptions"
+            [legend]="currentChart.barChartLegend"
+            [chartType]="currentChart.barChartType">
+          </canvas>
+        </div>
+      </div>  
+    </div>
+  </div>
+
+  <!-- monthly/weekly chart -->
+  <div class="row justify-content-center mb-2 text-center">
+    <div class="container col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5>Weekly</h5>
+        </div>
+        <div class="card-body">
+          <!-- setting canvas height for mobile - doesn't look too bad on desktop either -->
+          <canvas baseChart
+            height="300"
+            [datasets]="currentChart.barChartData"
+            [labels]="currentChart.barChartLabels"
+            [options]="currentChart.barChartOptions"
+            [legend]="currentChart.barChartLegend"
+            [chartType]="currentChart.barChartType">
           </canvas>
         </div>
       </div>  

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Options } from 'ng5-slider';
+import { TemperatureService } from 'src/app/services/temperature.service';
+import { ITemperatureInformation } from 'src/app/shared/models/temperatureinformation';
 
 @Component({
   selector: 'app-temperature-set',
@@ -10,33 +12,38 @@ export class TemperatureSetComponent implements OnInit {
 
   sliderOptions: Options = {
     ceil: 90,
-    floor: 75
+    floor: 70
   };
+  newMax: number;
+  newMin: number;
+  currentTemperatures: ITemperatureInformation;
 
-  newMinTemperature: number;
-  newMaxTemperature: number;
-  currentMaxTemperature: number;
-  currentMinTemperature: number;
+  constructor(private temperatureService: TemperatureService) { }
 
   ngOnInit(): void {
-    // TODO: fetch temp - if fail revert to a default
-    this.currentMaxTemperature = 85;
-    this.currentMinTemperature = 75;
-    this.newMaxTemperature = 85;  
-    this.newMinTemperature = 75;
+    this.getCurrentTemperatures();
   }
 
   setTemperature() {
-    this.currentMaxTemperature = this.newMaxTemperature;
-    this.currentMinTemperature = this.newMinTemperature;
-
-    console.log('Min Temp Set: ' + this.currentMaxTemperature);
-    console.log('Max Temp Set: ' + this.currentMinTemperature);
+    this.temperatureService.setTemperature({
+      currentHigh: this.newMax,
+      currentLow: this.newMin
+    })
+    this.getCurrentTemperatures();
   }
 
   reset() {
-    this.newMinTemperature = this.currentMinTemperature;
-    this.newMaxTemperature = this.currentMaxTemperature;
+    this.newMax = this.currentTemperatures.currentHigh;
+    this.newMin = this.currentTemperatures.currentLow;
+  }
+
+  private getCurrentTemperatures() {
+    this.temperatureService.getSetTemperatures()
+      .subscribe(result => { 
+        this.currentTemperatures = result;
+        this.newMax = result.currentHigh;
+        this.newMin = result.currentLow;
+      });
   }
 }
 

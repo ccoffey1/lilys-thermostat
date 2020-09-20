@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IChartConfig } from './models/chartconfig';
+import { TemperatureService } from '../../services/temperature.service';
+import { ITemperatureInformation } from '../../shared/models/temperatureinformation';
 
 @Component({
   selector: 'app-analytics',
@@ -8,13 +10,16 @@ import { IChartConfig } from './models/chartconfig';
 })
 export class AnalyticsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private temperatureService: TemperatureService) { }
 
-  fluctuationsChart: IChartConfig;
+  currentChart: IChartConfig;
+  setTemperatureInformation: ITemperatureInformation;
 
   ngOnInit(): void {
-    this.setupFluctuationsChart();
+    this.setupCurrentChart();
+    this.getSetTemperatures();
 
+    // TODO: For visual purposes - remove once API is setup
     setInterval(() => { this.addData() }, 1000);
   }
 
@@ -22,26 +27,29 @@ export class AnalyticsComponent implements OnInit {
 
   addData() {
     if (this.second > 20) {
-      this.fluctuationsChart.barChartData[0].data.splice(0, 1);
-      this.fluctuationsChart.barChartLabels.splice(0, 1);
+      this.currentChart.barChartData[0].data.splice(0, 1);
+      this.currentChart.barChartLabels.splice(0, 1);
     }
 
-    this.fluctuationsChart.barChartLabels.push(this.second.toString());
-    this.fluctuationsChart.barChartData[0].data.push(this.getRndInteger(73, 83));
-    this.fluctuationsChart.barChartData[1].data.push(80 /* current temperature */);
-    this.fluctuationsChart.barChartData[2].data.push(75 /* current temperature */);
+    this.currentChart.barChartLabels.push(this.second.toString());
+    this.currentChart.barChartData[0].data.push(this.getRndInteger(
+      this.setTemperatureInformation.currentLow, 
+      this.setTemperatureInformation.currentHigh));
+    this.currentChart.barChartData[1].data.push(this.setTemperatureInformation.currentHigh /* current temperature */);
+    this.currentChart.barChartData[2].data.push(this.setTemperatureInformation.currentLow /* current temperature */);
     this.second++;
   }
 
-  private setupFluctuationsChart() {
-    this.fluctuationsChart = {
+  private setupCurrentChart() {
+    this.currentChart = {
       barChartLabels: [],
       barChartType: 'line',
-      barChartLegend: false,
+      barChartLegend: true,
+      maintainAspectRatio: false,
       barChartData: [
-        { data: [], fill: false },
-        { data: [], pointRadius: 0, fill: '+1', borderColor: "green" },
-        { data: [], pointRadius: 0, fill: false, borderColor: "green" }
+        { data: [], color: 'black', label: 'Temperature Reading' },
+        { data: [], pointRadius: 0, fill: false, borderColor: 'red', label: 'Set Maximum' },
+        { data: [], pointRadius: 0, fill: false, borderColor: 'green', label: 'Set Minimum' }
       ],
       barChartOptions: {
         scaleShowVerticalLines: false,
@@ -56,6 +64,11 @@ export class AnalyticsComponent implements OnInit {
         }
       }
     }
+  }
+
+  private getSetTemperatures() {
+    this.temperatureService.getSetTemperatures()
+      .subscribe(result => this.setTemperatureInformation = result);
   }
 
   private getRndInteger(min: number, max: number) {
