@@ -1,6 +1,9 @@
 # LilyThermostat
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
+A simple single page application based thermostat to moderate the temperature in my hedgehog's cage.
+
+
+
 
 ## Development server
 
