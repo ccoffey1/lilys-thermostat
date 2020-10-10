@@ -1,0 +1,30 @@
+<div class="container my-2">
+  <div class="row justify-content-center mb-2 text-center">
+    <div class="container col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>Set Temperature</h5>
+        </div>
+        <div class="card-body">
+
+          <h1 *ngIf="currentTemperatures.currentLow != newMin || currentTemperatures.currentHigh != newMax">
+            <s style="color: gray;">{{currentTemperatures.currentLow}}° - {{currentTemperatures.currentHigh}}°</s>
+            <div style="color: red;">{{newMin}}° - {{newMax}}°</div>
+          </h1>
+          
+          <h1 *ngIf="currentTemperatures.currentLow == newMin && currentTemperatures.currentHigh == newMax">
+            {{currentTemperatures.currentLow}}° - {{currentTemperatures.currentHigh}}°
+          </h1>
+              <ng5-slider [(value)]="newMin"
+                          [(highValue)]="newMax"
+                          [options]="sliderOptions"
+              ></ng5-slider>
+              <div class="py-3 mt-2">
+                <button class="mx-1 btn btn-primary" (click)="setTemperature()">Set</button>
+                <button class="mx-1 btn btn-secondary" (click)="reset()">Revert</button>    
+              </div>
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>
